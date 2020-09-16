@@ -8,5 +8,5 @@ g.set_names('x', 'Fat', 'y', 'Protein', 'color', 'Brand');
 g.set_title('Cereal Healthiness');
 figure('Position', [100, 100, 800, 400]);
 g.draw();
-%% Graph using car mileage data 
+%% Graph using flu data  
 load flu.mat;
