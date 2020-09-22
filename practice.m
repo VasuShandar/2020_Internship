@@ -66,3 +66,46 @@ g(3,3).set_title('Pac flu')
 
 figure('Position', [100, 100, 800, 800]);
 g.draw();
+
+%% Better way to organize Flu Sheet using the Stack function
+clear all
+load flu.mat;
+flu.Date=datetime(flu.Date); % Convert text to Date-Time for easy use
+[fluS] = stack(flu,{'NE','MidAtl','ENCentral','WNCentral','SAtl','ESCentral','WSCentral','Mtn','Pac','WtdILI'},...
+                     'newdatavarnames','FluRate',...
+                     'indvarname','Region');
+                 
+
+% Graph all regions together using a smoothing fit. The pattern is not
+% linear, so g.stat_glm is not a good fit.
+g=gramm('x', fluS.Date.Month, 'y', fluS.FluRate, 'color',fluS.Region);
+g.stat_smooth();
+g.set_names('x','Month','y','Flu Rate');
+figure('Position', [100, 100, 800, 800]);
+g.draw();
+
+% Graph using the month name for the x tick axes
+g=gramm('x', month(fluS.Date,'name'), 'y', fluS.FluRate, 'color',fluS.Region);
+g.stat_smooth();
+g.set_names('x','Month','y','Flu Rate');
+g.set_order_options('x',{'January','February','March','April','May','June',...
+    'July','August','September','October','November','December'});
+figure('Position', [100, 100, 800, 800]);
+g.draw();
+
+%Oh No! The month labels are overlapping and can't be read... lets tilt
+%them and re-draw
+g.facet_axes_handles.XTickLabelRotation=45;
+g.redraw();
+
+% Lets graph each region in a seperate figure like you did
+g=gramm('x', fluS.Date.Month, 'y', fluS.FluRate);
+g.geom_point();
+g.stat_smooth();
+g.facet_wrap(fluS.Region,'ncols',4);
+figure('Position', [100, 100, 800, 800]);
+g.set_names('x','Month','y','Flu Rate');
+g.draw();
+
+
+                 
