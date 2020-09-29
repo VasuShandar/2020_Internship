@@ -71,7 +71,8 @@ g.draw();
 clear all
 load flu.mat;
 flu.Date=datetime(flu.Date); % Convert text to Date-Time for easy use
-[fluS] = stack(flu,{'NE','MidAtl','ENCentral','WNCentral','SAtl','ESCentral','WSCentral','Mtn','Pac','WtdILI'},...
+[fluS] = stack(flu,{'NE','MidAtl','ENCentral','WNCentral','SAtl','ESCentral',...
+                     'WSCentral','Mtn','Pac','WtdILI'},...
                      'newdatavarnames','FluRate',...
                      'indvarname','Region');
                  
@@ -107,5 +108,13 @@ figure('Position', [100, 100, 800, 800]);
 g.set_names('x','Month','y','Flu Rate');
 g.draw();
 
+
+g=gramm('x', fluS.Region, 'y', fluS.FluRate);
+g.stat_violin('normalization','width')
+g.stat_summary('geom',{'black_errorbar'});
+g.facet_wrap(month(fluS.Date,'name'),'ncols',4);
+g.set_names('x','Month','y','Flu Rate');
+figure('Position', [100, 100, 800, 800]);
+g.draw();
 
                  
