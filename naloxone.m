@@ -1,15 +1,24 @@
 %% Recreating graphs from microglia paper
 mydata = 'NaloxoneBehavior.xlsx';
 NaloxoneTable = readtable(mydata);
+NaloxoneTable.Treatment=categorical(NaloxoneTable.Treatment);
+NaloxoneTable.Label=categorical(NaloxoneTable.Label);
+
+
 
 %% Stacked Version
-% NaloxoneStacked = stack(NaloxoneTable,{'Distance','Contracted','Immobile'},...
-%                     'NewDataVariableName','points',...
-%                     'IndexVariableName','measurements');
-% g=gramm('x', NaloxoneStacked.Label, 'y', NaloxoneStacked.points, 'color', NaloxoneStacked.Label);
-% g.facet_wrap(NaloxoneStacked.measurements,'ncols',3);
-% figure('Position', [100, 100, 800, 800]);
-% g.draw();
+NaloxoneStacked = stack(NaloxoneTable,{'Distance','Contracted','Immobile'},...
+                    'NewDataVariableName','points',...
+                    'IndexVariableName','measurements');
+NaloxoneStacked.Label=categorical(NaloxoneStacked.Label);              
+g=gramm('x', NaloxoneStacked.Label, 'y', NaloxoneStacked.points, 'color', NaloxoneStacked.Label);
+g.geom_jitter();
+g.stat_violin('normalization','width', 'fill', 'transparent', 'width', 2);
+g.stat_summary('geom',{'point' 'black_errorbar'},'width',0.3,'dodge',0, 'setylim',false,'type','sem');
+g.facet_wrap(NaloxoneStacked.measurements,'ncols',3,'scale','free_y');
+g.set_order_options('x', {'SS', 'SN', 'MS', 'MN'})
+figure('Position', [100, 100, 800, 800]);
+g.draw();
 
                  
 %% Unstacked version                  
